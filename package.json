@@ -1,0 +1,15 @@
+{
+  "name": "youplay",
+  "version": "1.0.0",
+  "description": "Youtube Like WebApp",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "author": "Sandip Mahato",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
