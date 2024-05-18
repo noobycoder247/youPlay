@@ -7,8 +7,8 @@ import {ApiResponse} from "../utils/ApiResponse.js"
 const registerUser = asyncHandler(async (req, res) => {
     // get user details from front-end
     console.log("----", req.body);
-    let {username, email, fullName, avatar, coverImage, password} = req.body
-    if([username, email, fullName, avatar, password].some((field)=>field?.trim() === "")) {
+    const {username, email, fullName, password} = req.body
+    if([username, email, fullName, password].some((field)=>field?.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
     // Check user email or username already exist
@@ -26,18 +26,20 @@ const registerUser = asyncHandler(async (req, res) => {
 
     //Handling Files
     console.log(req.files);
-    const avatarLocalPath = req.files?.avatar[0]?.path; // in request object multer added "files" that why we can access "files" here
-    const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    const avatarLocalPath = req.files?.avatar ? req.files.avatar[0]?.path || "" : ""; // in request object multer added "files" that why we can access "files" here
+    const coverImageLocalPath = req.files?.coverImage ? req.files.coverImage[0]?.path || "" : ""
 
     console.log(">>> Loacl Path", avatarLocalPath);
     if(!avatarLocalPath) {
         throw new ApiError(400, "Avatar File is required");
     }
-    avatar = await uploadOnCloudinary(avatarLocalPath);
+
+    let avatar = await uploadOnCloudinary(avatarLocalPath);
     if(!avatar) {
-        throw new ApiError(400, "Avatar File is required");
+        throw new ApiError(400, "Unable to upload on cloudinary");
     }
 
+    let coverImage = "";
     if(coverImageLocalPath) {
         coverImage = await uploadOnCloudinary(coverImageLocalPath);
     }
