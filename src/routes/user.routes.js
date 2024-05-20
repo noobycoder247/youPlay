@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { registerUser } from "../controllers/user.controllers.js";
+import { registerUser, loginUser, logoutUser } from "../controllers/user.controllers.js";
 import {upload} from '../middlewares/multer.middleware.js';
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const userRouter = Router();
 
@@ -18,4 +19,8 @@ userRouter.route("/register").post(
     registerUser
 )
 
+userRouter.route("/login").post(loginUser);
+
+//Secured Routes (for Logged In user) //Here i injected "verifyJWT" so "logoutUser" "req" object have "user" access like "req.user" 
+userRouter.route("/logout").post(verifyJWT, logoutUser);
 export {userRouter}
